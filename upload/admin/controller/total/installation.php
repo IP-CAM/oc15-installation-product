@@ -21,6 +21,8 @@ class ControllerTotalInstallation extends Controller {
 		$this->data['text_enabled'] = $this->language->get('text_enabled'); //Text of status
 		$this->data['text_disabled'] = $this->language->get('text_disabled'); //Text of disable status
 		$this->data['text_none'] = $this->language->get('text_none');
+		
+		$this->data['entry_product'] = $this->language->get('entry_product');
 
 		$this->data['entry_total'] = $this->language->get('entry_total');
 		$this->data['entry_fee'] = $this->language->get('entry_fee');
@@ -66,6 +68,8 @@ class ControllerTotalInstallation extends Controller {
 
 		$this->data['cancel'] = $this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL');
 
+		$this->data['token'] = $this->session->data['token'];
+
 		if (isset($this->request->post['installation_status'])) {
 			$this->data['installation_status'] = $this->request->post['installation_status'];
 		} else {
@@ -106,7 +110,7 @@ class ControllerTotalInstallation extends Controller {
 		}	
 
 		$this->data['modules'] = array();
-		
+
 
 
 		$this->template = 'total/installation.tpl';
