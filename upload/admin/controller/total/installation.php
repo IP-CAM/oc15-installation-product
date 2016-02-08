@@ -62,3 +62,41 @@ class ControllerTotalInstallation extends Controller {
 			'separator' => ' :: '
 		);
 
+$this->data['action'] = $this->url->link('total/installation', 'token=' . $this->session->data['token'], 'SSL');
+
+		$this->data['cancel'] = $this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL');
+
+		if (isset($this->request->post['installation_status'])) {
+			$this->data['installation_status'] = $this->request->post['installation_status'];
+		} else {
+			$this->data['installation_status'] = $this->config->get('installation_status');
+		}
+
+		if (isset($this->request->post['installation_sort_order'])) {
+			$this->data['installation_sort_order'] = $this->request->post['installation_sort_order'];
+		} else {
+			$this->data['installation_sort_order'] = $this->config->get('installation_sort_order');
+		}
+
+		$this->template = 'total/installation.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
+		$this->response->setOutput($this->render());
+	}
+
+	protected function validate() {
+		if (!$this->user->hasPermission('modify', 'total/installation')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
+
+		if (!$this->error) {
+			return true;
+		} else {
+			return false;
+		}	
+	}
+}
+?>
