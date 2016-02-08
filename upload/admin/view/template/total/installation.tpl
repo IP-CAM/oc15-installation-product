@@ -17,6 +17,25 @@
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
         <table class="form">
           <tr>
+            <td><?php echo $entry_product; ?></td>
+            <td><input type="text" name="product" value="" /></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td><div id="installation-product" class="scrollbox">
+                <?php $class = 'odd'; ?>
+                <?php foreach ($products as $product) { ?>
+                <?php $class = ($class == 'even' ? 'odd' : 'even'); ?>
+                <div id="installation-product<?php echo $product['product_id']; ?>" class="<?php echo $class; ?>"><?php echo $product['name']; ?> <img src="view/image/delete.png" alt="" />
+                  <input type="hidden" value="<?php echo $product['product_id']; ?>" />
+                </div>
+                <?php } ?>
+              </div>
+              <input type="hidden" name="installation_product" value="<?php echo $installation_product; ?>" /></td>
+          </tr>
+        </table>
+        <table class="form">
+          <tr>
             <td><?php echo $entry_status; ?></td>
             <td><select name="installation_status">
                 <?php if ($installation_status) { ?>
@@ -37,4 +56,56 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript"><!--
+$('input[name=\'product\']').autocomplete({
+  delay: 500,
+  source: function(request, response) {
+    $.ajax({
+      url: 'index.php?route=catalog/product/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request.term),
+      dataType: 'json',
+      success: function(json) {   
+        response($.map(json, function(item) {
+          return {
+            label: item.name,
+            value: item.product_id
+          }
+        }));
+      }
+    });
+  }, 
+  select: function(event, ui) {
+    $('#installation-product' + ui.item.value).remove();
+    
+    $('#installation-product').append('<div id="installation-product' + ui.item.value + '">' + ui.item.label + '<img src="view/image/delete.png" alt="" /><input type="hidden" value="' + ui.item.value + '" /></div>');
+
+    $('#installation-product div:odd').attr('class', 'odd');
+    $('#installation-product div:even').attr('class', 'even');
+    
+    data = $.map($('#installation-product input'), function(element){
+      return $(element).attr('value');
+    });
+            
+    $('input[name=\'installation_product\']').attr('value', data.join());
+          
+    return false;
+  },
+  focus: function(event, ui) {
+        return false;
+    }
+});
+
+$('#installation-product div img').live('click', function() {
+  $(this).parent().remove();
+  
+  $('#installation-product div:odd').attr('class', 'odd');
+  $('#installation-product div:even').attr('class', 'even');
+
+  data = $.map($('#installation-product input'), function(element){
+    return $(element).attr('value');
+  });
+          
+  $('input[name=\'installation_product\']').attr('value', data.join()); 
+});
+//--></script>
 <?php echo $footer; ?>

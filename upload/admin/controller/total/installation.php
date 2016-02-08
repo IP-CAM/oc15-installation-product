@@ -62,7 +62,7 @@ class ControllerTotalInstallation extends Controller {
 			'separator' => ' :: '
 		);
 
-$this->data['action'] = $this->url->link('total/installation', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['action'] = $this->url->link('total/installation', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->data['cancel'] = $this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL');
 
@@ -77,6 +77,37 @@ $this->data['action'] = $this->url->link('total/installation', 'token=' . $this-
 		} else {
 			$this->data['installation_sort_order'] = $this->config->get('installation_sort_order');
 		}
+
+		if (isset($this->request->post['installation_product'])) {
+			$this->data['installation_product'] = $this->request->post['installation_product'];
+		} else {
+			$this->data['installation_product'] = $this->config->get('installation_product');
+		}
+
+		$this->load->model('catalog/product');
+
+		if (isset($this->request->post['installation_product'])) {
+			$products = explode(',', $this->request->post['installation_product']);
+		} else {		
+			$products = explode(',', $this->config->get('installation_product'));
+		}
+
+		$this->data['products'] = array();
+
+		foreach ($products as $product_id) {
+			$product_info = $this->model_catalog_product->getProduct($product_id);
+
+			if ($product_info) {
+				$this->data['products'][] = array(
+					'product_id' => $product_info['product_id'],
+					'name'       => $product_info['name']
+				);
+			}
+		}	
+
+		$this->data['modules'] = array();
+		
+
 
 		$this->template = 'total/installation.tpl';
 		$this->children = array(
