@@ -1,0 +1,12 @@
+<modification>
+<id>Installation module for OC1.5</id>
+<version>1.0</version>
+<vqmver>1.0</vqmver>
+<author>Igor Chyshkala</author>
+
+<file name="">
+<operation>
+<search position="after"><![CDATA[]]></search>
+<add><![CDATA[]]></add>
+</operation>	
+</file>
